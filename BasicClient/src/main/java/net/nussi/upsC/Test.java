@@ -1,5 +1,7 @@
 package net.nussi.upsC;
 
+import net.nussi.snmp.pdu.Avocent3009h;
+import net.nussi.snmp.pdu.PowerDistributionUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snmp4j.CommunityTarget;
@@ -17,47 +19,22 @@ public class Test {
     public static final Logger logger = LoggerFactory.getLogger("net.nussi.upsC.Test");
 
 
-    private static String  ipAddress  = "192.168.0.119";
-
-    private static String  port    = "161";
-
-    // OID of MIB RFC 1213; Scalar Object = .iso.org.dod.internet.mgmt.mib-2.system.sysDescr.0
-    private static String  oidValue  = ".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1.";  // ends with 0 for scalar object
-
-    private static int    snmpVersion  = SnmpConstants.version2c;
-
-    private static String  community  = "public_read";
-
-
     public static void main(String[] args) throws Exception {
-        AvocentPDU pdu = new AvocentPDU("public_read",SnmpConstants.version2c,"192.168.0.119",161);
+        PowerDistributionUnit pdu = new Avocent3009h("192.168.0.119",161,"public_read");
 
 //        pdu.controlOutlet(1, AvocentPDU.OutletControl.powerOn);
 
         for(int i = 1; i <= 10; i++) {
-            pdu.controlOutlet(i, AvocentPDU.OutletControl.powerOff);
+            pdu.outletControl(i, PowerDistributionUnit.OutletControlAction.powerOff);
             Thread.sleep(100);
         }
 
         Thread.sleep(1000);
 
         for(int i = 1; i <= 10; i++) {
-            pdu.controlOutlet(i, AvocentPDU.OutletControl.powerOn);
+            pdu.outletControl(i, PowerDistributionUnit.OutletControlAction.powerOn);
             Thread.sleep(100);
         }
-
-        Thread.sleep(1000);
-
-        pdu.controlOutlet(new int[]{1,2,3,4,5}, AvocentPDU.OutletControl.powerOff);
-
-        Thread.sleep(500);
-
-        pdu.controlOutlet(new int[]{1,2,3,4,5}, AvocentPDU.OutletControl.powerOn);
-        pdu.controlOutlet(new int[]{6,7,8,9,10}, AvocentPDU.OutletControl.powerOff);
-
-        Thread.sleep(500);
-
-        pdu.controlOutlet(new int[]{6,7,8,9,10}, AvocentPDU.OutletControl.powerOn);
 
 //        System.out.println("SNMP SET Demo");
 //
@@ -136,67 +113,67 @@ public class Test {
 //        snmp.close();
     }
 
-
-    public static class AvocentPDU {
-        CommunityTarget comtarget;
-        TransportMapping transport;
-        Snmp snmp;
-
-        public AvocentPDU(String community, int snmpVersion, String ipAddress, int port) throws Exception {
-            comtarget = new CommunityTarget();
-            comtarget.setCommunity(new OctetString(community));
-            comtarget.setVersion(snmpVersion);
-            comtarget.setAddress(new UdpAddress(ipAddress + "/" + port));
-            comtarget.setRetries(2);
-            comtarget.setTimeout(1000);
-
-            transport = new DefaultUdpTransportMapping();
-            transport.listen();
-
-            snmp = new Snmp(transport);
-        }
-
-
-
-        public PDU controlOutlet(int number, OutletControl outletControl) throws IOException {
-            PDU pdu = new PDU();
-            pdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1." + number), new Integer32(outletControl.getId())));
-            System.out.println("Sendig: " + ".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1." + number + " --> " + outletControl.getId());
-            pdu.setType(PDU.SET);
-
-            ResponseEvent response = snmp.set(pdu, comtarget);
-            return response.getResponse();
-        }
-
-        public PDU controlOutlet(int[] numbers, OutletControl outletControl) throws IOException {
-            PDU pdu = new PDU();
-            for(int i : numbers) {
-                pdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1." + i), new Integer32(outletControl.getId())));
-                System.out.println("Sendig: " + ".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1." + i + " --> " + outletControl.getId());
-            }
-            pdu.setType(PDU.SET);
-
-            ResponseEvent response = snmp.set(pdu, comtarget);
-            return response.getResponse();
-        }
-
-        enum OutletControl {
-            powerOn(2),
-            powerOff(3),
-            powerCycle(4),
-            powerLock(5),
-            powerUnlock(6);
-
-            int id;
-            OutletControl(int id) {
-             this.id = id;
-            }
-            public int getId() {
-                return id;
-            }
-        }
-
-    }
+//
+//    public static class AvocentPDU {
+//        CommunityTarget comtarget;
+//        TransportMapping transport;
+//        Snmp snmp;
+//
+//        public AvocentPDU(String community, int snmpVersion, String ipAddress, int port) throws Exception {
+//            comtarget = new CommunityTarget();
+//            comtarget.setCommunity(new OctetString(community));
+//            comtarget.setVersion(snmpVersion);
+//            comtarget.setAddress(new UdpAddress(ipAddress + "/" + port));
+//            comtarget.setRetries(2);
+//            comtarget.setTimeout(1000);
+//
+//            transport = new DefaultUdpTransportMapping();
+//            transport.listen();
+//
+//            snmp = new Snmp(transport);
+//        }
+//
+//
+//
+//        public PDU controlOutlet(int number, OutletControl outletControl) throws IOException {
+//            PDU pdu = new PDU();
+//            pdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1." + number), new Integer32(outletControl.getId())));
+//            System.out.println("Sendig: " + ".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1." + number + " --> " + outletControl.getId());
+//            pdu.setType(PDU.SET);
+//
+//            ResponseEvent response = snmp.set(pdu, comtarget);
+//            return response.getResponse();
+//        }
+//
+//        public PDU controlOutlet(int[] numbers, OutletControl outletControl) throws IOException {
+//            PDU pdu = new PDU();
+//            for(int i : numbers) {
+//                pdu.add(new VariableBinding(new OID(".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1." + i), new Integer32(outletControl.getId())));
+//                System.out.println("Sendig: " + ".1.3.6.1.4.1.10418.17.2.5.5.1.6.1.1." + i + " --> " + outletControl.getId());
+//            }
+//            pdu.setType(PDU.SET);
+//
+//            ResponseEvent response = snmp.set(pdu, comtarget);
+//            return response.getResponse();
+//        }
+//
+//        enum OutletControl {
+//            powerOn(2),
+//            powerOff(3),
+//            powerCycle(4),
+//            powerLock(5),
+//            powerUnlock(6);
+//
+//            int id;
+//            OutletControl(int id) {
+//             this.id = id;
+//            }
+//            public int getId() {
+//                return id;
+//            }
+//        }
+//
+//    }
 
 
 }

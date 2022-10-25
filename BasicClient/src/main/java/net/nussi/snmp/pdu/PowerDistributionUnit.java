@@ -10,6 +10,7 @@ import org.snmp4j.smi.*;
 import org.snmp4j.transport.DefaultUdpTransportMapping;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class PowerDistributionUnit {
 
@@ -47,6 +48,10 @@ public class PowerDistributionUnit {
         throw new RuntimeException("Method controlOutlet(int outletID, OutletControlAction action) not Implemented jet!");
     }
 
+    public boolean outletControl(int[] outletID, OutletControlAction action) {
+        throw new RuntimeException("Method controlOutlet(int[] outletID, OutletControlAction action) not Implemented jet!");
+    }
+
     public enum OutletControlAction {
         powerOn(2),
         powerOff(3),
@@ -64,7 +69,6 @@ public class PowerDistributionUnit {
         public Integer32 getActionInt32() {
             return new Integer32(action);
         }
-
     }
 
     // OUTLET STATUS
@@ -74,14 +78,52 @@ public class PowerDistributionUnit {
     }
 
     public enum OutletStatus {
-        ON,
-        OFF,
-        Unknown,
+         off ( 1 ) ,
+         on ( 2 ) ,
+         offLocked ( 3 ) ,
+         onLocked ( 4 ) ,
+         offCycle ( 5 ) ,
+         onPendingOff ( 6 ) ,
+         offPendingOn ( 7 ) ,
+         onPendingCycle ( 8 ) ,
+         notSet ( 9 ) ,
+         onFixed ( 10 ) ,
+         offShutdown ( 11 ) ,
+         tripped ( 12 );
+
+        int status;
+        OutletStatus(int id) {
+            this.status = id;
+        }
+        public int getStatus() {
+            return status;
+        }
+        public Integer32 getActionInt32() {
+            return new Integer32(status);
+        }
+
+        public static OutletStatus fromInt(int i) {
+            switch (i) {
+                case 1: return off;
+                case 2: return on;
+                case 3: return offLocked;
+                case 4: return onLocked;
+                case 5: return offCycle;
+                case 6: return onPendingOff;
+                case 7: return offPendingOn;
+                case 8: return onPendingCycle;
+                case 9: return notSet;
+                case 10: return onFixed;
+                case 11: return offShutdown;
+                case 12: return tripped;
+            }
+            return null;
+        }
     }
 
     // Packed Util
 
-    public PDU setPackage(VariableBinding[] bindings) throws IOException {
+    public PDU setPackage(ArrayList<VariableBinding> bindings) throws IOException {
         PDU data = new PDU();
         for(VariableBinding binding : bindings) {
             data.add(binding);
@@ -94,7 +136,8 @@ public class PowerDistributionUnit {
     }
 
     public PDU setPackage(VariableBinding binding) throws IOException {
-        VariableBinding[] bindings = new VariableBinding[]{binding};
+        ArrayList<VariableBinding> bindings = new ArrayList<VariableBinding>();
+        bindings.add(binding);
         return setPackage(bindings);
     }
 
@@ -105,12 +148,29 @@ public class PowerDistributionUnit {
         }
         data.setType(PDU.GET);
 
-        ResponseEvent response = this.SNMP.set(data, COMMUNITYTARGET);
+        ResponseEvent response = this.SNMP.get(data, COMMUNITYTARGET);
         PDU resp = response.getResponse();
         return resp;
     }
 
     public PDU getPackage(VariableBinding binding) throws IOException {
+        VariableBinding[] bindings = new VariableBinding[]{binding};
+        return getPackage(bindings);
+    }
+
+    public PDU getBulkPackage(VariableBinding[] bindings) throws IOException {
+        PDU data = new PDU();
+        for(VariableBinding binding : bindings) {
+            data.add(binding);
+        }
+        data.setType(PDU.GETBULK);
+
+        ResponseEvent response = this.SNMP.getBulk(data, COMMUNITYTARGET);
+        PDU resp = response.getResponse();
+        return resp;
+    }
+
+    public PDU getBulkPackage(VariableBinding binding) throws IOException {
         VariableBinding[] bindings = new VariableBinding[]{binding};
         return getPackage(bindings);
     }
