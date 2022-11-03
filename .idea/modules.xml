@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/BasicBackend/BasicBackend.iml" filepath="$PROJECT_DIR$/BasicBackend/BasicBackend.iml" />
       <module fileurl="file://$PROJECT_DIR$/BasicClient/BasicClient.iml" filepath="$PROJECT_DIR$/BasicClient/BasicClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../basic_webinterface.iml" filepath="$PROJECT_DIR$/../basic_webinterface.iml" />
     </modules>
   </component>
 </project>

@@ -1,55 +1,51 @@
-package net.nussi.snmp.pdu;
+package nussi.net.pduControl.pdu.products;
 
+import nussi.net.pduControl.pdu.OutletControlAction;
+import nussi.net.pduControl.pdu.OutletStatus;
+import nussi.net.pduControl.pdu.PowerDistributionUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.snmp4j.PDU;
-import org.snmp4j.event.ResponseEvent;
 import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
 import org.snmp4j.smi.VariableBinding;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Avocent3009h extends PowerDistributionUnit {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        Avocent3009h pdu = new Avocent3009h("192.168.0.119", 161, "public_read");
-//        int[] outletIDs = new int[]{1};
+    public static void main(String[] args) throws IOException {
+        Avocent3009h pdu1 = new Avocent3009h("192.168.0.119", 161, "public_read");
+        Avocent3009h pdu2 = new Avocent3009h("192.168.0.120", 161, "public_read");
         int[] outletIDs = new int[]{1,2,3,4,5,6,7,8,9,10};
 
-//        for(int i: outletIDs) {
-//            pdu.outletOnDelay(i, 0);
-//            pdu.outletOffDelay(i, 0);
-//        }
 
-        pdu.outletOffDelay(outletIDs, 0);
-        pdu.outletOnDelay(outletIDs, 0);
+        pdu1.setOutletOffDelay(outletIDs, 1);
+        pdu1.setOutletOnDelay(outletIDs, 1);
 
-        pdu.outletControl(outletIDs, OutletControlAction.powerOff);
-        pdu.outletControl(outletIDs, OutletControlAction.powerOn);
+        pdu2.setOutletOffDelay(outletIDs, 1);
+        pdu2.setOutletOnDelay(outletIDs, 1);
 
-        pdu.outletOffDelay(outletIDs, 1);
-        pdu.outletOnDelay(outletIDs, 1);
-
-        pdu.outletControl(outletIDs, OutletControlAction.powerOff);
-        pdu.outletControl(outletIDs, OutletControlAction.powerOn);
-
-//        for(int i: outletIDs) {
-//            pdu.outletControl(i, OutletControlAction.powerOff);
-//            System.out.println("Outlet " + i + " --> " + pdu.outletStatus(i));
-//            Thread.sleep(100);
-//        }
-//
-//        for(int i: outletIDs) {
-//
-//            pdu.outletControl(i, OutletControlAction.powerOn);
-//            System.out.println("Outlet " + i + " --> " + pdu.outletStatus(i));
-//            Thread.sleep(100);
-//        }
+        pdu1.doOutletAction(outletIDs, OutletControlAction.powerOff);
+        pdu2.doOutletAction(outletIDs, OutletControlAction.powerOff);
+        pdu1.doOutletAction(outletIDs, OutletControlAction.powerOn);
+        pdu2.doOutletAction(outletIDs, OutletControlAction.powerOn);
 
 
-//        System.out.println(pdu.outletOnDelay(1, 2));
 
 
+    }
+
+    // DEFINITIONS
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String LoggerPreFix = "Avocent3009h["+this.HOSTNAME+"] ";
+
+
+    @Override
+    public int[] validOutletIDS() {
+        return new int[]{1,2,3,4,5,6,7,8,9,10};
     }
 
     public Avocent3009h(String HOSTNAME, int PORT, String COMMUNITY) throws IOException {
@@ -64,19 +60,18 @@ public class Avocent3009h extends PowerDistributionUnit {
     }
 
     @Override
-    public boolean outletControl(int outletID, OutletControlAction action) {
+    public void doOutletAction(int outletID, OutletControlAction action) {
         try {
             OID oid = getOutletControlOID(outletID);
             Integer32 actionID = action.getActionInt32();
             setPackage(new VariableBinding(oid, actionID));
+            logger.info(LoggerPreFix+"OutletAction --> " + action + " --> " + outletID);
         } catch (IOException e) {
-            return false;
         }
-        return true;
     }
 
     @Override
-    public boolean outletControl(int[] outletID, OutletControlAction action) {
+    public void doOutletAction(int[] outletID, OutletControlAction action) {
         try {
             ArrayList<VariableBinding> bindings = new ArrayList<>();
             for(int i : outletID) {
@@ -84,10 +79,9 @@ public class Avocent3009h extends PowerDistributionUnit {
             }
 
             setPackage(bindings);
+            logger.info(LoggerPreFix+"OutletAction --> " + action + " --> " + Arrays.toString(outletID));
         } catch (IOException e) {
-            return false;
         }
-        return true;
     }
 
     // OUTLET STATUS
@@ -98,17 +92,18 @@ public class Avocent3009h extends PowerDistributionUnit {
     }
 
     @Override
-    public OutletStatus outletStatus(int outletID) {
+    public OutletStatus getOutletStatus(int outletID) {
         OID oid = getOutletStatusOID(outletID);
-        int status;
+        OutletStatus status;
         try {
             PDU data = getPackage(new VariableBinding(oid));
             if(data == null) return OutletStatus.notSet;
-            status = data.getVariable(oid).toInt();
+            status = OutletStatus.fromInt(data.getVariable(oid).toInt());
+            logger.info(LoggerPreFix+"OutletStatus  --> " + outletID + " --> " + status);
         } catch (IOException e) {
             throw new RuntimeException("Failed to get outletStatus!");
         }
-        return OutletStatus.fromInt(status);
+        return status;
     }
 
     // OUTLET ON Delay
@@ -118,18 +113,19 @@ public class Avocent3009h extends PowerDistributionUnit {
         return new OID(OutletOnDelayBaseOID + outletID);
     }
 
-    public boolean outletOnDelay(int outletID, int seconds) {
+    @Override
+    public void setOutletOnDelay(int outletID, int seconds) {
         OID oid = getOutletOnDelayOID(outletID);
         try {
-            PDU data = setPackage(new VariableBinding(oid, new Integer32(seconds)));
-            data.getVariable(oid).toInt();
+            setPackage(new VariableBinding(oid, new Integer32(seconds)));
+            logger.info(LoggerPreFix+"OutletOnDelay --> " + seconds + " --> " + outletID);
         } catch (IOException e) {
             throw new RuntimeException("Failed to get outletOnDelay!");
         }
-        return true;
     }
 
-    public boolean outletOnDelay(int[] outletID, int seconds) {
+    @Override
+    public void setOutletOnDelay(int[] outletID, int seconds) {
         try {
             ArrayList<VariableBinding> bindings = new ArrayList<>();
             for(int i : outletID) {
@@ -139,19 +135,21 @@ public class Avocent3009h extends PowerDistributionUnit {
                 ));
             }
 
-            PDU data = setPackage(bindings);
+            setPackage(bindings);
+            logger.info(LoggerPreFix+"OutletOnDelay --> " + seconds + " --> " + Arrays.toString(outletID));
         } catch (IOException e) {
             throw new RuntimeException("Failed to get outletOnDelay!");
         }
-        return true;
     }
 
-    public int outletOnDelay(int outletID) {
+    @Override
+    public int getOutletOnDelay(int outletID) {
         OID oid = getOutletOnDelayOID(outletID);
         int status;
         try {
             PDU data = getPackage(new VariableBinding(oid));
             status = data.getVariable(oid).toInt();
+            logger.info(LoggerPreFix+"OutletOnDelay --> " + outletID + " --> " + data);
         } catch (IOException e) {
             throw new RuntimeException("Failed to get outletOnDelay!");
         }
@@ -166,19 +164,19 @@ public class Avocent3009h extends PowerDistributionUnit {
         return new OID(OutletOffDelayBaseOID + outletID);
     }
 
-    public boolean outletOffDelay(int outletID, int seconds) {
+    @Override
+    public void setOutletOffDelay(int outletID, int seconds) {
         OID oid = getOutletOffDelayOID(outletID);
-        int status;
         try {
-            PDU data = setPackage(new VariableBinding(oid, new Integer32(seconds)));
-            status = data.getVariable(oid).toInt();
+            setPackage(new VariableBinding(oid, new Integer32(seconds)));
+            logger.info(LoggerPreFix+"OutletOffDelay --> " + seconds + " --> " + outletID);
         } catch (IOException e) {
             throw new RuntimeException("Failed to get outletOnDelay!");
         }
-        return true;
     }
 
-    public boolean outletOffDelay(int[] outletID, int seconds) {
+    @Override
+    public void setOutletOffDelay(int[] outletID, int seconds) {
         try {
             ArrayList<VariableBinding> bindings = new ArrayList<>();
             for(int i : outletID) {
@@ -189,18 +187,20 @@ public class Avocent3009h extends PowerDistributionUnit {
             }
 
             setPackage(bindings);
+            logger.info(LoggerPreFix+"OutletOffDelay --> " + seconds + " --> " + Arrays.toString(outletID));
         } catch (IOException e) {
             throw new RuntimeException("Failed to get outletOnDelay!");
         }
-        return true;
     }
 
-    public int outletOffDelay(int outletID) {
+    @Override
+    public int getOutletOffDelay(int outletID) {
         OID oid = getOutletOffDelayOID(outletID);
         int status;
         try {
             PDU data = getPackage(new VariableBinding(oid));
             status = data.getVariable(oid).toInt();
+            logger.info(LoggerPreFix+"OutletOffDelay --> " + outletID + " --> " + data);
         } catch (IOException e) {
             throw new RuntimeException("Failed to get outletOnDelay!");
         }
