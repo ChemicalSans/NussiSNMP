@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class BlankPDU extends PowerDistributionUnit {
-    private int[] ValidOutletIDs;
+    private final int[] ValidOutletIDs;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String LoggerPreFix = "BlankPDU ";
 
