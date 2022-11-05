@@ -113,6 +113,9 @@ public class Outlet extends JPanel implements Runnable {
             case offLocked:
                 this.lockButton.setBackground(dark_red);
                 break;
+            case notSet:
+                this.lockButton.setBackground(dark_gray);
+                break;
             default:
                 this.lockButton.setBackground(dark_green);
                 break;
@@ -155,8 +158,13 @@ public class Outlet extends JPanel implements Runnable {
     }
 
     private String calcTextLockButton(){
-        String builder = "Lock: " +
-                status;
+        String builder = "" + status;
+
+        while (builder.length()<10) {
+            builder = " " + builder;
+        }
+
+        builder = "Lock: " + builder;
 
         return builder;
     }

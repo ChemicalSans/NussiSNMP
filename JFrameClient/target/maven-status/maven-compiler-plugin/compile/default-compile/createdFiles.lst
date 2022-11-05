@@ -1,6 +1,5 @@
 net\nussi\jFrameClient\Main.class
 net\nussi\jFrameClient\Outlet.class
-net\nussi\jFrameClient\Outlet$MyActionListener.class
 net\nussi\jFrameClient\OutletList.class
 net\nussi\jFrameClient\Outlet$1.class
 net\nussi\jFrameClient\Util.class
