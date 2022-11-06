@@ -1,5 +1,7 @@
 package nussi.net.pduControl.pdu;
 
+import java.util.HashMap;
+
 public interface PowerDistributionUnitInterface {
 
 
@@ -11,6 +13,7 @@ public interface PowerDistributionUnitInterface {
 
     // STATUS
     OutletStatus getOutletStatus(int outletID);
+    HashMap<Integer, OutletStatus> getOutletStatus(int[] outletID);
 
     // DELAYS
     void setOutletOnDelay(int outletID, int seconds);

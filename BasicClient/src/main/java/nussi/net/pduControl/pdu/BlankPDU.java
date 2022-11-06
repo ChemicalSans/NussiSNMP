@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class BlankPDU extends PowerDistributionUnit {
     private final int[] ValidOutletIDs;
@@ -35,6 +36,16 @@ public class BlankPDU extends PowerDistributionUnit {
     public OutletStatus getOutletStatus(int outletID) {
         logger.info(LoggerPreFix+"OutletStatus  --> " + outletID + " --> " + OutletStatus.notSet);
         return OutletStatus.notSet;
+    }
+
+    @Override
+    public HashMap<Integer, OutletStatus> getOutletStatus(int[] outletID) {
+        HashMap<Integer,OutletStatus> data = new HashMap<>();
+        for(int id : outletID) {
+            data.put(id, OutletStatus.notSet);
+        }
+        logger.info(LoggerPreFix+"OutletStatus  --> " + outletID + " --> " + data);
+        return data;
     }
 
     @Override

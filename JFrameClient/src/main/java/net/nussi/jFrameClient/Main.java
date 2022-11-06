@@ -1,5 +1,6 @@
 package net.nussi.jFrameClient;
 
+import net.nussi.jFrameClient.outlet.OutletList;
 import nussi.net.pduControl.pdu.PowerDistributionUnit;
 import nussi.net.pduControl.pdu.PowerDistributionUnitManager;
 import nussi.net.pduControl.pdu.products.Avocent3009h;
@@ -9,8 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
-    static JFrame mainFrame;
-    static PowerDistributionUnitManager manager;
+    public static JFrame mainFrame;
+    public static PowerDistributionUnitManager manager;
 
     public static void main(String[] args) throws IOException {
         InitPDUManager();
@@ -18,7 +19,7 @@ public class Main {
 
 
 
-        mainFrame.add(OutletList.fromIDs(manager.validOutletIDS()));
+        mainFrame.add(new OutletList(manager.validOutletIDS()));
 
 
 

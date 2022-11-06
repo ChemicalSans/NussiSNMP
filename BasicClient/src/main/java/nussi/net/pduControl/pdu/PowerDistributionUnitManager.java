@@ -5,7 +5,8 @@ import nussi.net.pduControl.pdu.products.Avocent3009h;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.Map;
+import java.util.Set;
 
 public class PowerDistributionUnitManager implements PowerDistributionUnitInterface {
     private final ArrayList<Integer> OutletIDs = new ArrayList<>();
@@ -38,31 +39,33 @@ public class PowerDistributionUnitManager implements PowerDistributionUnitInterf
 
         PowerDistributionUnitManager manager = new PowerDistributionUnitManager(pdus);
 
-        manager.setAllOutletOnDelay(0);
-        manager.setAllOutletOffDelay(0);
-        manager.doAllOutletAction(OutletControlAction.powerOff);
-        manager.doAllOutletAction(OutletControlAction.powerOn);
+        System.out.println(manager.getOutletStatus(manager.validOutletIDS()).toString());
 
-        manager.setAllOutletOnDelay(1);
-        manager.setAllOutletOffDelay(1);
-        manager.doAllOutletAction(OutletControlAction.powerOff);
-        manager.doAllOutletAction(OutletControlAction.powerOn);
-
-
-        manager.doAllOutletAction(OutletControlAction.powerOff);
-        for(int id : manager.validOutletIDS()) {
-            manager.doOutletAction(id, OutletControlAction.powerOn);
-            Thread.sleep(100);
-            manager.doOutletAction(id, OutletControlAction.powerOff);
-        }
-
-
-        manager.doOutletAction(new int[]{1,3,5,7,9,11,13,15,17,19}, OutletControlAction.powerOn);
-        Thread.sleep(1000);
-        manager.doOutletAction(new int[]{1,3,5,7,9,11,13,15,17,19}, OutletControlAction.powerOff);
-        manager.doOutletAction(new int[]{2,4,6,8,10,12,14,16,18,20}, OutletControlAction.powerOn);
-        Thread.sleep(1000);
-        manager.doOutletAction(new int[]{2,4,6,8,10,12,14,16,18,20}, OutletControlAction.powerOff);
+//        manager.setAllOutletOnDelay(0);
+//        manager.setAllOutletOffDelay(0);
+//        manager.doAllOutletAction(OutletControlAction.powerOff);
+//        manager.doAllOutletAction(OutletControlAction.powerOn);
+//
+//        manager.setAllOutletOnDelay(1);
+//        manager.setAllOutletOffDelay(1);
+//        manager.doAllOutletAction(OutletControlAction.powerOff);
+//        manager.doAllOutletAction(OutletControlAction.powerOn);
+//
+//
+//        manager.doAllOutletAction(OutletControlAction.powerOff);
+//        for(int id : manager.validOutletIDS()) {
+//            manager.doOutletAction(id, OutletControlAction.powerOn);
+//            Thread.sleep(100);
+//            manager.doOutletAction(id, OutletControlAction.powerOff);
+//        }
+//
+//
+//        manager.doOutletAction(new int[]{1,3,5,7,9,11,13,15,17,19}, OutletControlAction.powerOn);
+//        Thread.sleep(1000);
+//        manager.doOutletAction(new int[]{1,3,5,7,9,11,13,15,17,19}, OutletControlAction.powerOff);
+//        manager.doOutletAction(new int[]{2,4,6,8,10,12,14,16,18,20}, OutletControlAction.powerOn);
+//        Thread.sleep(1000);
+//        manager.doOutletAction(new int[]{2,4,6,8,10,12,14,16,18,20}, OutletControlAction.powerOff);
 
 
 //        while (true) {
@@ -136,6 +139,39 @@ public class PowerDistributionUnitManager implements PowerDistributionUnitInterf
     @Override
     public OutletStatus getOutletStatus(int outletID) {
         return idToPdu.get(outletID).getOutletStatus(idToID.get(outletID));
+    }
+
+    @Override
+    public HashMap<Integer, OutletStatus> getOutletStatus(int[] outletID) {
+        HashMap<PowerDistributionUnit, HashMap<Integer, Integer>> maps = new HashMap<>();
+        HashMap<Integer, OutletStatus> data = new HashMap<>();
+        for(int id : outletID) {
+            PowerDistributionUnit pdu = idToPdu.get(id);
+            int localID = idToID.get(id);
+            try {
+                maps.get(pdu).put(localID, id);
+            } catch (Exception e) {
+                HashMap<Integer, Integer> list = new HashMap<>();
+                list.put(localID, id);
+                maps.put(pdu, list);
+            }
+        }
+
+        for(Map.Entry<PowerDistributionUnit, HashMap<Integer, Integer>> pair : maps.entrySet()) {
+            int[] localIDs = pair
+                    .getValue()
+                    .keySet()
+                    .stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray();;
+
+            HashMap<Integer, OutletStatus> response = pair.getKey().getOutletStatus(localIDs);
+            for(Map.Entry<Integer, OutletStatus> p : response.entrySet()) {
+                data.put(pair.getValue().get(p.getKey()),p.getValue());
+            }
+        }
+
+        return data;
     }
 
     @Override

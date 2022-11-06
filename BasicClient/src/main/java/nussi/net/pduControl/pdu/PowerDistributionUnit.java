@@ -62,6 +62,13 @@ public abstract class PowerDistributionUnit implements PowerDistributionUnitInte
     }
 
     public PDU getPackage(VariableBinding[] bindings) throws IOException {
+        ArrayList<VariableBinding> b = new ArrayList<>();
+        for(VariableBinding binding : bindings) {
+            b.add(binding);
+        }
+        return getPackage(b);
+    }
+    public PDU getPackage(ArrayList<VariableBinding> bindings) throws IOException {
         PDU data = new PDU();
         for(VariableBinding binding : bindings) {
             data.add(binding);
