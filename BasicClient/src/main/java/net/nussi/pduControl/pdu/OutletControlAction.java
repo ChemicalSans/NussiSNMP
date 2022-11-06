@@ -1,4 +1,4 @@
-package nussi.net.pduControl.pdu;
+package net.nussi.pduControl.pdu;
 
 import org.snmp4j.smi.Integer32;
 

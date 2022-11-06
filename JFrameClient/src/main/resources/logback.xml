@@ -9,12 +9,13 @@
         </layout>
     </appender>
 
-    <root level="error">
+    <root level="info">
         <appender-ref ref="CONSOLE"/>
     </root>
 
-    <logger name="nussi.net" level="info"/>
-    <logger name="nussi.net.pduControl.pdu.products.Avocent3009h" level="warn"/>
+    <logger name="net.nussi.pduControl.pdu.products.Avocent3009h" level="WARN"/>
+    <logger name="net.nussi.jFrameClient.outlet.OutletList" level="WARN"/>
+    <logger name="net.nussi.jFrameClient.outlet.NameTextPanel" level="info"/>
 
 
 </configuration>

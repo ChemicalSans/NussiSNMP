@@ -1,4 +1,4 @@
-package nussi.net.pduControl.pdu;
+package net.nussi.pduControl.pdu;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +11,15 @@ public class BlankPDU extends PowerDistributionUnit {
     private final int[] ValidOutletIDs;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String LoggerPreFix = "BlankPDU ";
+    private final HashMap<Integer, String> names = new HashMap<>();
 
     public BlankPDU(int[] ValidOutletIDs) throws IOException {
         super("0.0.0.0", 0, "");
         this.ValidOutletIDs = ValidOutletIDs;
+
+        for(int id : ValidOutletIDs) {
+            names.put(id, "outlet_"+id);
+        }
     }
 
     @Override
@@ -78,5 +83,16 @@ public class BlankPDU extends PowerDistributionUnit {
     public int getOutletOffDelay(int outletID) {
         logger.info(LoggerPreFix+"OutletOffDelay --> " + outletID + " --> " + 0);
         return 0;
+    }
+
+
+    @Override
+    public void setOutletName(int outletID, String name) {
+        names.put(outletID, name);
+    }
+
+    @Override
+    public String getOutletName(int outletID) {
+        return names.get(outletID);
     }
 }

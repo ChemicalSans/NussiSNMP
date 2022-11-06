@@ -1,4 +1,4 @@
-package nussi.net.pduControl.pdu;
+package net.nussi.pduControl.pdu;
 
 import org.snmp4j.CommunityTarget;
 import org.snmp4j.PDU;
@@ -56,9 +56,14 @@ public abstract class PowerDistributionUnit implements PowerDistributionUnitInte
     }
 
     public PDU setPackage(VariableBinding binding) throws IOException {
-        ArrayList<VariableBinding> bindings = new ArrayList<VariableBinding>();
-        bindings.add(binding);
-        return setPackage(bindings);
+        PDU data = new PDU();
+        data.add(binding);
+        data.setType(PDU.SET);
+
+
+        ResponseEvent response = this.SNMP.set(data, COMMUNITYTARGET);
+        PDU resp = response.getResponse();
+        return resp;
     }
 
     public PDU getPackage(VariableBinding[] bindings) throws IOException {

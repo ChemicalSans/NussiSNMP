@@ -1,12 +1,11 @@
-package nussi.net.pduControl.pdu;
+package net.nussi.pduControl.pdu;
 
-import nussi.net.pduControl.pdu.products.Avocent3009h;
+import net.nussi.pduControl.pdu.products.Avocent3009h;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class PowerDistributionUnitManager implements PowerDistributionUnitInterface {
     private final ArrayList<Integer> OutletIDs = new ArrayList<>();
@@ -218,5 +217,15 @@ public class PowerDistributionUnitManager implements PowerDistributionUnitInterf
     @Override
     public int getOutletOffDelay(int outletID) {
         return idToPdu.get(outletID).getOutletOffDelay(idToID.get(outletID));
+    }
+
+    @Override
+    public void setOutletName(int outletID, String name) {
+        idToPdu.get(outletID).setOutletName(idToID.get(outletID), name);
+    }
+
+    @Override
+    public String getOutletName(int outletID) {
+        return idToPdu.get(outletID).getOutletName(idToID.get(outletID));
     }
 }

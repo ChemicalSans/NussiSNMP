@@ -1,6 +1,6 @@
 package net.nussi.jFrameClient.outlet;
 
-import nussi.net.pduControl.pdu.OutletStatus;
+import net.nussi.pduControl.pdu.OutletStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,9 @@ public class OutletList extends JPanel implements Runnable {
                 HashMap<Integer, OutletStatus> data = manager.getOutletStatus(outletIDs);
 
                 for(Map.Entry<Integer, OutletStatus> pair : data.entrySet()) {
-                    outlets.get(pair.getKey()).setStatus(pair.getValue());
+                    Outlet outlet = outlets.get(pair.getKey());
+                    outlet.setStatus(pair.getValue());
+                    logger.info("Outlet " + " --> " + outlet.outletID + " --> " + pair.getValue());
                 }
 
                 Thread.sleep(250);

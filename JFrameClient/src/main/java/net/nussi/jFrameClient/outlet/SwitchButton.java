@@ -7,25 +7,20 @@ import java.awt.*;
 import static net.nussi.jFrameClient.Main.manager;
 import static net.nussi.jFrameClient.Util.*;
 
-public class LockButton extends MyButton {
+public class SwitchButton extends MyButton {
     private Outlet outlet;
 
-    public LockButton(Outlet outlet) {
+    public SwitchButton(Outlet outlet) {
         super();
         this.outlet = outlet;
     }
 
     public void updateText() {
         StringBuilder builder = new StringBuilder();
-        switch (outlet.getStatus()) {
-            case onLocked:
-            case offLocked:
-                builder.append(ASCII_LOCK_CLOSED);
-                break;
-            default:
-                builder.append(ASCII_LOCK_OPEN);
-                break;
-        }
+        builder.append("ID: ");
+        if(outlet.outletID<10) builder.append(" ");
+        if(outlet.outletID<100) builder.append(" ");
+        builder.append(outlet.outletID);
 
         this.setText(builder.toString());
     }
@@ -33,15 +28,16 @@ public class LockButton extends MyButton {
     public void updateColor() {
         this.setForeground(Color.WHITE);
         switch (outlet.getStatus()) {
-            case onLocked:
+            case off:
             case offLocked:
                 this.setBackground(dark_red);
                 break;
-            case notSet:
-                this.setBackground(dark_gray);
+            case on:
+            case onLocked:
+                this.setBackground(dark_green);
                 break;
             default:
-                this.setBackground(dark_green);
+                this.setBackground(dark_gray);
                 break;
         }
         this.updateUI();
@@ -53,18 +49,12 @@ public class LockButton extends MyButton {
         outlet.updateOutletStatus();
 
         switch (outlet.getStatus())  {
-            case onLocked:
-            case offLocked:
-                manager.doOutletAction(outlet.outletID, OutletControlAction.powerUnlock);
+            case off:
+                manager.doOutletAction(outlet.outletID, OutletControlAction.powerOn);
                 break;
-            default:
-                manager.doOutletAction(outlet.outletID, OutletControlAction.powerLock);
+            case on:
+                manager.doOutletAction(outlet.outletID, OutletControlAction.powerOff);
                 break;
         }
     }
-
-
-
-
-
 }

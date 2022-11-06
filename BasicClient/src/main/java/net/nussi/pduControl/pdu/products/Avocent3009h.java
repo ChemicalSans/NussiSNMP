@@ -1,13 +1,14 @@
-package nussi.net.pduControl.pdu.products;
+package net.nussi.pduControl.pdu.products;
 
-import nussi.net.pduControl.pdu.OutletControlAction;
-import nussi.net.pduControl.pdu.OutletStatus;
-import nussi.net.pduControl.pdu.PowerDistributionUnit;
+import net.nussi.pduControl.pdu.OutletControlAction;
+import net.nussi.pduControl.pdu.OutletStatus;
+import net.nussi.pduControl.pdu.PowerDistributionUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snmp4j.PDU;
 import org.snmp4j.smi.Integer32;
 import org.snmp4j.smi.OID;
+import org.snmp4j.smi.OctetString;
 import org.snmp4j.smi.VariableBinding;
 
 import java.io.IOException;
@@ -24,6 +25,13 @@ public class Avocent3009h extends PowerDistributionUnit {
 
 
         System.out.println(pdu1.getOutletStatus(pdu1.validOutletIDS()).toString());
+
+        for(int id : pdu1.validOutletIDS()) {
+            pdu1.setOutletName(id, "kek");
+            pdu1.getOutletName(id);
+        }
+
+
 
 
 //        pdu1.setOutletOffDelay(outletIDs, 1);
@@ -241,6 +249,41 @@ public class Avocent3009h extends PowerDistributionUnit {
             throw new RuntimeException("Failed to get outletOnDelay!");
         }
         return status;
+    }
+
+
+
+    // NAME
+    String OutletNameBaseOID = ".1.3.6.1.4.1.10418.17.2.5.5.1.4.1.1.";
+
+    private OID getOutletNameOID(int outletID) {
+        return new OID(OutletNameBaseOID + outletID);
+    }
+
+
+    @Override
+    public void setOutletName(int outletID, String name) {
+        OID oid = getOutletNameOID(outletID);
+        try {
+            setPackage(new VariableBinding(oid, new OctetString(name)));
+            logger.info(LoggerPreFix+"OutletName --> " + name + " --> " + outletID);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String getOutletName(int outletID) {
+        OID oid = getOutletNameOID(outletID);
+        String name;
+        try {
+            PDU data = getPackage(new VariableBinding(oid));
+            name = data.getVariable(oid).toString();
+            logger.info(LoggerPreFix+"OutletName --> " + outletID + " --> " + name);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to get outletOnDelay!");
+        }
+        return name;
     }
 
 

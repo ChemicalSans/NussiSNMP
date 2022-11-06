@@ -26,6 +26,7 @@
             <artifactId>logback-classic</artifactId>
             <version>1.4.4</version>
         </dependency>
+
     </dependencies>
 
 </project>

@@ -1,5 +1,13 @@
+net\nussi\jFrameClient\outlet\SwitchButton$1.class
 net\nussi\jFrameClient\Main.class
-net\nussi\jFrameClient\Outlet.class
-net\nussi\jFrameClient\OutletList.class
-net\nussi\jFrameClient\Outlet$1.class
+net\nussi\jFrameClient\outlet\NameTextPanel.class
+net\nussi\jFrameClient\outlet\LockButton$1.class
+net\nussi\jFrameClient\outlet\NameTextPanel$MyActionListener.class
+net\nussi\jFrameClient\outlet\MyButtonInterface.class
 net\nussi\jFrameClient\Util.class
+net\nussi\jFrameClient\outlet\MyButton$MyActionListener.class
+net\nussi\jFrameClient\outlet\SwitchButton.class
+net\nussi\jFrameClient\outlet\MyButton.class
+net\nussi\jFrameClient\outlet\OutletList.class
+net\nussi\jFrameClient\outlet\Outlet.class
+net\nussi\jFrameClient\outlet\LockButton.class

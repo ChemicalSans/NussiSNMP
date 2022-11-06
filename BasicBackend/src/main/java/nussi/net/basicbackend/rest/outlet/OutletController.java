@@ -1,9 +1,10 @@
 package nussi.net.basicbackend.rest.outlet;
 
-import nussi.net.basicbackend.BasicBackendApplication;
-import nussi.net.pduControl.pdu.OutletControlAction;
+import net.nussi.pduControl.pdu.OutletControlAction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static nussi.net.basicbackend.BasicBackendApplication.manager;
 
 @RequestMapping("/outlet")
 @RestController
@@ -13,7 +14,7 @@ public class OutletController {
     public ResponseEntity OutletStatus(
             @PathVariable int id
     ) {
-        return ResponseEntity.ok(BasicBackendApplication.pdu.getOutletStatus(id));
+        return ResponseEntity.ok(manager.getOutletStatus(id));
     }
 
     @PostMapping("/status/{id}")
@@ -24,7 +25,7 @@ public class OutletController {
         OutletControlAction action = null;
         if(actionValue.equals("powerSwitch")) {
             
-            switch (BasicBackendApplication.pdu.getOutletStatus(id)) {
+            switch (manager.getOutletStatus(id)) {
                 case off:
                     action = OutletControlAction.powerOn;
                     break;
@@ -40,10 +41,10 @@ public class OutletController {
         }
 
         if(action != null) {
-            BasicBackendApplication.pdu.doOutletAction(id, action);
+            manager.doOutletAction(id, action);
         }
 
-        BasicBackendApplication.pdu.doOutletAction(id, action);
+        manager.doOutletAction(id, action);
         return ResponseEntity.ok().build();
     }
 

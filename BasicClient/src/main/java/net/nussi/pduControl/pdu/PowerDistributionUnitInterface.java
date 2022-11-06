@@ -1,4 +1,4 @@
-package nussi.net.pduControl.pdu;
+package net.nussi.pduControl.pdu;
 
 import java.util.HashMap;
 
@@ -23,4 +23,10 @@ public interface PowerDistributionUnitInterface {
     void setOutletOffDelay(int outletID, int seconds);
     void setOutletOffDelay(int[] outletID, int seconds);
     int getOutletOffDelay(int outletID);
+
+
+    // Name
+    void setOutletName(int outletID, String name);
+    String getOutletName(int outletID);
+
 }
