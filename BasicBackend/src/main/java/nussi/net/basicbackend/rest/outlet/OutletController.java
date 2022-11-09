@@ -1,6 +1,6 @@
 package nussi.net.basicbackend.rest.outlet;
 
-import net.nussi.pduControl.pdu.OutletControlAction;
+import net.nussi.snmp.pdu.OutletControlAction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

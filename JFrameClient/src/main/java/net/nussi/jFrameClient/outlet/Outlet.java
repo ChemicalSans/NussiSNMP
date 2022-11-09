@@ -1,8 +1,8 @@
 package net.nussi.jFrameClient.outlet;
 
 import net.nussi.jFrameClient.Main;
-import net.nussi.pduControl.pdu.OutletStatus;
-import net.nussi.pduControl.pdu.PowerDistributionUnitManager;
+import net.nussi.snmp.pdu.OutletStatus;
+import net.nussi.snmp.pdu.PowerDistributionUnitManager;
 
 import javax.swing.*;
 

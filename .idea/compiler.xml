@@ -8,7 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="BasicBackend" />
         <module name="JFrameClient" />
-        <module name="BasicClient" />
+        <module name="SnmpClient" />
       </profile>
     </annotationProcessing>
   </component>

@@ -1,6 +1,6 @@
 package net.nussi.jFrameClient.outlet;
 
-import net.nussi.pduControl.pdu.OutletStatus;
+import net.nussi.snmp.pdu.OutletStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,12 +1,11 @@
 package nussi.net.basicbackend;
 
-import net.nussi.pduControl.pdu.PowerDistributionUnit;
-import net.nussi.pduControl.pdu.PowerDistributionUnitManager;
-import net.nussi.pduControl.pdu.products.Avocent3009h;
+import net.nussi.snmp.pdu.PowerDistributionUnit;
+import net.nussi.snmp.pdu.PowerDistributionUnitManager;
+import net.nussi.snmp.pdu.products.Avocent3009h;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 @SpringBootApplication

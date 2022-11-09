@@ -1,9 +1,9 @@
 package net.nussi.jFrameClient;
 
 import net.nussi.jFrameClient.outlet.OutletList;
-import net.nussi.pduControl.pdu.PowerDistributionUnit;
-import net.nussi.pduControl.pdu.PowerDistributionUnitManager;
-import net.nussi.pduControl.pdu.products.Avocent3009h;
+import net.nussi.snmp.pdu.PowerDistributionUnit;
+import net.nussi.snmp.pdu.PowerDistributionUnitManager;
+import net.nussi.snmp.pdu.products.Avocent3009h;
 
 import javax.swing.*;
 import java.io.IOException;

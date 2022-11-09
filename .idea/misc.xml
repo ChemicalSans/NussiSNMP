@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/BasicBackend/pom.xml" />
         <option value="$PROJECT_DIR$/../JFrameClient/pom.xml" />
         <option value="$PROJECT_DIR$/JFrameClient/pom.xml" />
+        <option value="$PROJECT_DIR$/SnmpClient/pom.xml" />
       </list>
     </option>
   </component>

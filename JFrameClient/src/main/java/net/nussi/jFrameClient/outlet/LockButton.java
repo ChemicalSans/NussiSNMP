@@ -1,6 +1,6 @@
 package net.nussi.jFrameClient.outlet;
 
-import net.nussi.pduControl.pdu.OutletControlAction;
+import net.nussi.snmp.pdu.OutletControlAction;
 
 import java.awt.*;
 

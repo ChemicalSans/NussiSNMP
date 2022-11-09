@@ -1,4 +1,4 @@
-package net.nussi.pduControl.pdu;
+package net.nussi.snmp.pdu;
 
 import java.util.HashMap;
 

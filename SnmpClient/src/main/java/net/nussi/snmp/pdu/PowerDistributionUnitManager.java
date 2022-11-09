@@ -1,6 +1,6 @@
-package net.nussi.pduControl.pdu;
+package net.nussi.snmp.pdu;
 
-import net.nussi.pduControl.pdu.products.Avocent3009h;
+import net.nussi.snmp.pdu.products.Avocent3009h;
 
 import java.io.IOException;
 import java.util.ArrayList;

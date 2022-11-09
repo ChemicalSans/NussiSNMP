@@ -1,8 +1,8 @@
-package net.nussi.pduControl.pdu.products;
+package net.nussi.snmp.pdu.products;
 
-import net.nussi.pduControl.pdu.OutletControlAction;
-import net.nussi.pduControl.pdu.OutletStatus;
-import net.nussi.pduControl.pdu.PowerDistributionUnit;
+import net.nussi.snmp.pdu.OutletControlAction;
+import net.nussi.snmp.pdu.OutletStatus;
+import net.nussi.snmp.pdu.PowerDistributionUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.snmp4j.PDU;

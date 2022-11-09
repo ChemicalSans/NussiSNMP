@@ -13,7 +13,7 @@
         <appender-ref ref="CONSOLE"/>
     </root>
 
-    <logger name="net.nussi.pduControl.pdu.products.Avocent3009h" level="WARN"/>
+    <logger name="net.nussi.snmp.pdu.products.Avocent3009h" level="WARN"/>
     <logger name="net.nussi.jFrameClient.outlet.OutletList" level="WARN"/>
     <logger name="net.nussi.jFrameClient.outlet.NameTextPanel" level="info"/>
 
